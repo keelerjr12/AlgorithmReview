@@ -1,9 +1,6 @@
 #ifndef CHP7_H
 #define CHP7_H
 
-#include <iostream>
-#include <vector>
-
 namespace Keeler {
 
     template<typename ForwardIt>
