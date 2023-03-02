@@ -1,12 +1,17 @@
 #include <iostream>
 #include <vector>
-#include "chp6.h"
+#include "chp7.h"
+#include "utility.h"
 
 int main() {
 
-    //Keeler::print(std::begin(heap.Data()), std::end(heap.Data()));
+    std::vector<int> v1 { 3, 2, 9, 7, 8, 1, 6, 4, 5};
 
-    //Keeler::print(std::begin(heap.Data()), std::end(heap.Data()));
+    Keeler::print(std::begin(v1), std::end(v1));
+
+    Keeler::quicksort(std::begin(v1), std::end(v1));
+
+    Keeler::print(std::begin(v1), std::end(v1));
 
     return 0;
 }
