@@ -3,8 +3,8 @@
 
 namespace Keeler {
 
-    template<typename ForwardIt>
-    ForwardIt partition(ForwardIt first, ForwardIt last) {
+    template<typename RandomIt>
+    RandomIt partition(RandomIt first, RandomIt last) {
         const auto x = *std::prev(last);
         auto i = std::prev(first);
 
@@ -18,8 +18,8 @@ namespace Keeler {
         return i;
     }
 
-    template<typename ForwardIt>
-    void quicksort(ForwardIt first, ForwardIt last) {
+    template<typename RandomIt>
+    void quicksort(RandomIt first, RandomIt last) {
         if (first < last) {
             const auto q = partition(first, last);
             quicksort(first, q);

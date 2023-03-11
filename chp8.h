@@ -2,6 +2,7 @@
 #define CHP8_H
 
 #include <algorithm>
+#include <cmath>
 #include <ranges>
 #include <vector>
 
@@ -35,6 +36,21 @@ namespace Keeler {
 
     template<typename ForwardIt>
     void radix_sort(ForwardIt first, ForwardIt last) {
+        auto max = *std::max_element(first, last);
+
+        for (auto divisor = 1; divisor <= std::pow(10, std::log10(max)); divisor *= 10) {
+            std::array<std::vector<int>, 10> buckets;
+
+            for (auto it = first; it < last; ++it) {
+                auto index = (*it / divisor) % 10;
+                buckets[index].push_back(*it);
+            }
+
+            auto out = first;
+            for (const auto& bucket : buckets) {
+                out = std::copy(std::begin(bucket), std::end(bucket), out);
+            }
+        }
     }
 }
 
