@@ -1,6 +1,8 @@
 #ifndef CHP7_H
 #define CHP7_H
 
+#include <random>
+
 namespace Keeler {
 
     template<typename RandomIt>
@@ -16,6 +18,23 @@ namespace Keeler {
         }
 
         return i;
+    }
+
+    template <typename RandomIt>
+    RandomIt randomized_partition(RandomIt first, RandomIt last) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        auto n = std::distance(first, last) - 1;
+        std::uniform_int_distribution<> dist(0, n);
+
+        auto idx = dist(gen);
+        auto pivot = std::next(first, idx);
+
+        std::swap(*pivot, *std::prev(last));
+        auto q = Keeler::partition(first, last);
+
+        return q;
     }
 
     template<typename RandomIt>
