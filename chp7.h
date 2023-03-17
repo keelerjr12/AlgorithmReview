@@ -13,7 +13,7 @@ namespace Keeler {
         for (auto j = first; j < last; ++j) {
             if (*j <= x) {
                 ++i;
-                std::swap(*i, *j);
+                std::iter_swap(i, j);
             }
         }
 
@@ -31,7 +31,7 @@ namespace Keeler {
         auto idx = dist(gen);
         auto pivot = std::next(first, idx);
 
-        std::swap(*pivot, *std::prev(last));
+        std::iter_swap(pivot, std::prev(last));
         auto q = Keeler::partition(first, last);
 
         return q;
