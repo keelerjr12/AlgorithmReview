@@ -1,6 +1,7 @@
 #ifndef CHP9_H
 #define CHP9_H
 
+#include "chp2.h"
 #include "chp7.h"
 #include "utility.h"
 
