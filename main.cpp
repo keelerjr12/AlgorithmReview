@@ -5,24 +5,15 @@
 
 int main() {
 
-//    std::vector<int> v1 { 31, 24, 1, 18, 51, 49, 32, 111, 46, 26, 55, 22, 38 };
+    const int INIT_VAL = 1;
+    Keeler::List<int> list;
 
- //   Keeler::print(std::begin(v1), std::end(v1));
+    list.push_back(INIT_VAL);
+    list.push_back(INIT_VAL);
+    list.clear();
+    auto act_val = list.empty();
 
-    auto list = Keeler::List<int>();
-    std::cout << list.empty() << std::endl;
-
-    list.push_back(1);
-    std::cout << list.front() << std::endl;
-    std::cout << list.back() << std::endl;
-    std::cout << list.empty() << std::endl;
-
-    list.push_back(2);
-    std::cout << list.front() << std::endl;
-    std::cout << list.back() << std::endl;
-    std::cout << list.empty() << std::endl;
-
-  //  Keeler::print(std::begin(v1), std::end(v1));
+    std::cout << act_val << std::endl;
 
     return 0;
 }

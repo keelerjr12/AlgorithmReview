@@ -1,0 +1,17 @@
+HelloTest.BasicAssertions 4 0
+LinkedList.Empty 9 0.000297953
+LinkedList.Non_empty 8 0.000317904
+LinkedList.push_single_value_check_front 7 0.000336144
+LinkedList.push_single_value_check_back 6 0.00034562
+LinkedList.push_single_value_pop_back_empty 10 0.000263402
+LinkedList.push_multiple_values_pop_back_returns_previous_value 1 0.00249398
+LinkedList.empty_list_returns_empty 8 0.000335585
+LinkedList.non_empty_list_returns_non_empty 8 0.000320916
+LinkedList.push_single_value_front_returns_value 8 0.000315208
+LinkedList.push_multiple_values_front_returns_head 8 0.000326958
+LinkedList.push_single_value_back_returns_value 8 0.000358836
+LinkedList.push_multiple_values_back_returns_tail 8 0.000362391
+LinkedList.push_multiple_values_pop_back_back_returns_new_tail 8 0.000312371
+LinkedList.push_multiple_values_clear_returns_empty 0 0
+---
+LinkedList.push_multiple_values_clear_returns_empty

@@ -6,7 +6,8 @@ namespace Keeler {
     template <class T>
     class List {
      public:
-        using reference = T&;
+        using value = T;
+        using reference = value&;
 
         reference front() {
             return head->value;
@@ -17,13 +18,11 @@ namespace Keeler {
         }
 
         bool empty() const {
-            return head == &sentinel;
+            return head == nullptr;
         }
 
         void push_back(const T& value) {
-            Node* to_add = new Node();
-            to_add->next = &sentinel;
-            to_add->value = value;
+            const auto to_add = new Node {nullptr, tail, value};
 
             if (empty()) {
                 head = to_add;
@@ -33,17 +32,36 @@ namespace Keeler {
         }
 
         void pop_back() {
+            const auto new_tail = tail->prev;
+            delete tail;
+
+            tail = new_tail;
+            if (tail == nullptr) {
+                head = nullptr;
+            }
+        }
+
+        void clear() {
+            for (auto curr = head; curr != nullptr; /* empty */) {
+                const auto next_node = curr->next;
+                delete curr;
+
+                curr = next_node;
+            }
+
+            head = nullptr;
+            tail = nullptr;
         }
 
      private:
         struct Node {
             Node* next = nullptr;
+            Node* prev = nullptr;
             T value;
         };
 
-        Node sentinel;
-        Node* head = &sentinel;
-        Node* tail = &sentinel;
+        Node* head = nullptr;
+        Node* tail = nullptr;
     };
 
 }
