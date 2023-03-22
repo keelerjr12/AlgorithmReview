@@ -17,10 +17,9 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(
-  dsa_tests
-  dsa_tests.cpp
-)
+add_executable( dsa_tests dsa_tests.cpp )
+add_executable( main main.cpp )
+
 target_link_libraries(
   dsa_tests
   GTest::gtest_main

@@ -5,9 +5,13 @@ namespace Keeler {
 
     template <class T>
     class List {
+
      public:
+        class ListIterator;
+
         using value = T;
         using reference = value&;
+        using iterator = ListIterator;
 
         reference front() {
             return head->value;
@@ -26,6 +30,8 @@ namespace Keeler {
 
             if (empty()) {
                 head = to_add;
+            } else {
+                tail->next = to_add;
             }
 
             tail = to_add;
@@ -53,6 +59,10 @@ namespace Keeler {
             tail = nullptr;
         }
 
+        iterator begin() {
+            return iterator(head);
+        }
+
      private:
         struct Node {
             Node* next = nullptr;
@@ -62,7 +72,26 @@ namespace Keeler {
 
         Node* head = nullptr;
         Node* tail = nullptr;
+
+    public:
+        class ListIterator {
+         public:
+            explicit ListIterator(Node* node) : m_node(node) { }
+
+            reference operator*() const {
+                return m_node->value;
+            }
+
+            ListIterator& operator++() {
+                m_node = m_node->next;
+                return *this;
+            }
+
+         private:
+            Node* m_node;
+        };
     };
+
 
 }
 

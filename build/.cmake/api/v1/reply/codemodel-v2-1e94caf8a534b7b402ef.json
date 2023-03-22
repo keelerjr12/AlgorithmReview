@@ -20,7 +20,8 @@
 					"source" : ".",
 					"targetIndexes" : 
 					[
-						0
+						0,
+						5
 					]
 				},
 				{
@@ -93,7 +94,8 @@
 					"name" : "algorithms_review",
 					"targetIndexes" : 
 					[
-						0
+						0,
+						5
 					]
 				},
 				{
@@ -144,7 +146,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "dsa_tests::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-dsa_tests-Debug-fcdf0c28edfd32281a8b.json",
+					"jsonFile" : "target-dsa_tests-Debug-c2790ad2f42f3fbec32a.json",
 					"name" : "dsa_tests",
 					"projectIndex" : 0
 				},
@@ -175,6 +177,13 @@
 					"jsonFile" : "target-gtest_main-Debug-34e176df0fd6025f2289.json",
 					"name" : "gtest_main",
 					"projectIndex" : 3
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "main::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-main-Debug-c865f50681e546db02db.json",
+					"name" : "main",
+					"projectIndex" : 0
 				}
 			]
 		}
