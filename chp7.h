@@ -3,7 +3,7 @@
 
 #include <random>
 
-namespace Keeler {
+namespace keeler {
 
     template<typename RandomIt>
     RandomIt partition(RandomIt first, RandomIt last) {
@@ -32,7 +32,7 @@ namespace Keeler {
         auto pivot = std::next(first, idx);
 
         std::iter_swap(pivot, std::prev(last));
-        auto q = Keeler::partition(first, last);
+        auto q = keeler::partition(first, last);
 
         return q;
     }

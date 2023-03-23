@@ -1,17 +1,56 @@
 #ifndef CHP10_H
 #define CHP10_H
 
-namespace Keeler {
+namespace keeler {
 
-    template <class T>
+    namespace detail {
+        
+        template <typename T>
+        struct Node {
+            Node* next = nullptr;
+            Node* prev = nullptr;
+            T value;
+        };
+
+    }
+
+    template<typename T>
+    class ListIterator {
+      public:
+
+        using value_type = T;
+        using pointer_type = T*;
+        using reference = T&;
+        using difference_type = std::ptrdiff_t;
+        using iterator_category = std::forward_iterator_tag;
+
+        explicit ListIterator(detail::Node<T>* node) : m_node(node) { }
+
+        reference operator*() const {
+            return m_node->value;
+        }
+
+        ListIterator& operator++() {
+            m_node = m_node->next;
+            return *this;
+        }
+
+        friend bool operator==(const ListIterator& lhs, const ListIterator& rhs) { return lhs.m_node == rhs.m_node; }
+        friend bool operator!=(const ListIterator& lhs, const ListIterator& rhs) { return lhs.m_node != rhs.m_node; }
+
+      private:
+
+        detail::Node<T>* m_node;
+    };
+
+    template <typename T>
     class List {
 
      public:
-        class ListIterator;
 
         using value = T;
         using reference = value&;
-        using iterator = ListIterator;
+        using iterator = ListIterator<T>;
 
         reference front() {
             return head->value;
@@ -26,7 +65,7 @@ namespace Keeler {
         }
 
         void push_back(const T& value) {
-            const auto to_add = new Node {nullptr, tail, value};
+            const auto to_add = new detail::Node<T> {nullptr, tail, value};
 
             if (empty()) {
                 head = to_add;
@@ -63,33 +102,15 @@ namespace Keeler {
             return iterator(head);
         }
 
+        iterator end() {
+            return iterator(nullptr);
+        }
+
      private:
-        struct Node {
-            Node* next = nullptr;
-            Node* prev = nullptr;
-            T value;
-        };
 
-        Node* head = nullptr;
-        Node* tail = nullptr;
+        detail::Node<T>* head = nullptr;
+        detail::Node<T>* tail = nullptr;
 
-    public:
-        class ListIterator {
-         public:
-            explicit ListIterator(Node* node) : m_node(node) { }
-
-            reference operator*() const {
-                return m_node->value;
-            }
-
-            ListIterator& operator++() {
-                m_node = m_node->next;
-                return *this;
-            }
-
-         private:
-            Node* m_node;
-        };
     };
 
 

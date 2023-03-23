@@ -5,7 +5,7 @@
 #include <limits>
 #include <tuple>
 
-namespace Keeler {
+namespace keeler {
 
     template<typename ForwardIter>
     std::tuple<ForwardIter, ForwardIter, int> max_sum_subarray_brute_force(ForwardIter first, ForwardIter last) {

@@ -3,7 +3,7 @@
 
 #include <iterator>
 
-namespace Keeler {
+namespace keeler {
 
     template<typename ForwardIt>
     void print(ForwardIt first, ForwardIt last) {

@@ -3,7 +3,7 @@
 
 TEST(LinkedList, empty_list_returns_empty) {
     
-  Keeler::List<int> list;
+  keeler::List<int> list;
 
   auto act_val = list.empty();
   EXPECT_TRUE(act_val);
@@ -11,7 +11,7 @@ TEST(LinkedList, empty_list_returns_empty) {
 
 TEST(LinkedList, non_empty_list_returns_non_empty) {
     
-  Keeler::List<int> list;
+  keeler::List<int> list;
 
   list.push_back(1);
 
@@ -22,7 +22,7 @@ TEST(LinkedList, non_empty_list_returns_non_empty) {
 TEST(LinkedList, push_single_value_front_returns_value) {
     
   const int EXP_VAL = 1;
-  Keeler::List<int> list;
+  keeler::List<int> list;
 
   list.push_back(EXP_VAL);
   auto act_val = list.front();
@@ -33,7 +33,7 @@ TEST(LinkedList, push_single_value_front_returns_value) {
 TEST(LinkedList, push_multiple_values_front_returns_head) {
     
   const int EXP_VAL = 1;
-  Keeler::List<int> list;
+  keeler::List<int> list;
 
   list.push_back(EXP_VAL);
   list.push_back(EXP_VAL + 1);
@@ -45,7 +45,7 @@ TEST(LinkedList, push_multiple_values_front_returns_head) {
 TEST(LinkedList, push_single_value_back_returns_value) {
     
   const int EXP_VAL = 1;
-  Keeler::List<int> list;
+  keeler::List<int> list;
 
   list.push_back(EXP_VAL);
   auto act_val = list.back();
@@ -56,7 +56,7 @@ TEST(LinkedList, push_single_value_back_returns_value) {
 TEST(LinkedList, push_multiple_values_back_returns_tail) {
     
   const int EXP_VAL = 1;
-  Keeler::List<int> list;
+  keeler::List<int> list;
 
   list.push_back(EXP_VAL - 1);
   list.push_back(EXP_VAL);
@@ -68,7 +68,7 @@ TEST(LinkedList, push_multiple_values_back_returns_tail) {
 TEST(LinkedList, push_single_value_pop_back_empty) {
     
   const int EXP_VAL = 1;
-  Keeler::List<int> list;
+  keeler::List<int> list;
 
   list.push_back(EXP_VAL);
   list.pop_back();
@@ -80,7 +80,7 @@ TEST(LinkedList, push_single_value_pop_back_empty) {
 TEST(LinkedList, push_multiple_values_pop_back_back_returns_new_tail) {
     
   const int EXP_VAL = 1;
-  Keeler::List<int> list;
+  keeler::List<int> list;
 
   list.push_back(EXP_VAL);
   list.push_back(EXP_VAL + 1);
@@ -93,7 +93,7 @@ TEST(LinkedList, push_multiple_values_pop_back_back_returns_new_tail) {
 TEST(LinkedList, push_multiple_values_clear_returns_empty) {
     
   const int INIT_VAL = 1;
-  Keeler::List<int> list;
+  keeler::List<int> list;
 
   list.push_back(INIT_VAL);
   list.push_back(INIT_VAL);

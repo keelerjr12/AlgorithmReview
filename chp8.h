@@ -6,7 +6,7 @@
 #include <ranges>
 #include <vector>
 
-namespace Keeler {
+namespace keeler {
 
     template<typename ForwardIt>
     void counting_sort(ForwardIt first, ForwardIt last) {

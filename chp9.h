@@ -5,7 +5,7 @@
 #include "chp7.h"
 #include "utility.h"
 
-namespace Keeler {
+namespace keeler {
 
     template<typename ForwardIt>
     ForwardIt min_element(ForwardIt first, ForwardIt last) {

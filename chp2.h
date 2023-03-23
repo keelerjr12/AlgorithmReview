@@ -6,7 +6,7 @@
 #include <iterator>
 #include <vector>
 
-namespace Keeler {
+namespace keeler {
 
     template<typename RandomIt>
     void insertion_sort(RandomIt first, RandomIt last) {
@@ -44,11 +44,11 @@ namespace Keeler {
     void sort(RandomIt first, RandomIt last) {
         if (last - first > 1) {
             auto mid = first + (last - first) / 2;
-            Keeler::sort(first, mid);
-            Keeler::sort(mid, last);
+            keeler::sort(first, mid);
+            keeler::sort(mid, last);
 
             std::vector<int> output;
-            Keeler::merge(first, mid, mid, last, std::back_inserter(output));
+            keeler::merge(first, mid, mid, last, std::back_inserter(output));
             std::copy(std::begin(output), std::end(output), first);
         } 
     }
