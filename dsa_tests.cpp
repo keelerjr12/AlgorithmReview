@@ -19,6 +19,41 @@ TEST(LinkedList, non_empty_list_returns_non_empty) {
   EXPECT_FALSE(act_val);
 }
 
+TEST(LinkedList, empty_list_size_returns_zero) {
+    
+  const auto SIZE_EXPECTED = 0;
+  keeler::List<int> list;
+
+  auto sz = list.size();
+  EXPECT_EQ(SIZE_EXPECTED, sz);
+}
+
+TEST(LinkedList, list_size_one_returns_one) {
+    
+  const auto SIZE_EXPECTED = 1;
+  keeler::List<int> list;
+
+  list.push_back(1);
+
+  auto sz = list.size();
+  EXPECT_EQ(SIZE_EXPECTED, sz);
+}
+
+TEST(LinkedList, list_size_more_than_one_returns_more_than_one) {
+    
+  const auto SIZE_EXPECTED = 2;
+  keeler::List<int> list;
+
+  list.push_back(1);
+  list.push_back(2);
+  list.pop_back();
+  list.push_back(2);
+
+  auto sz = list.size();
+  EXPECT_EQ(SIZE_EXPECTED, sz);
+}
+
+
 TEST(LinkedList, push_single_value_front_returns_value) {
     
   const int EXP_VAL = 1;

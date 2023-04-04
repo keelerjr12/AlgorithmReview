@@ -35,6 +35,11 @@ namespace keeler {
             return *this;
         }
 
+        void destroy() {
+            delete m_node;
+            m_node = nullptr;
+        }
+
         friend bool operator==(const ListIterator& lhs, const ListIterator& rhs) { return lhs.m_node == rhs.m_node; }
         friend bool operator!=(const ListIterator& lhs, const ListIterator& rhs) { return lhs.m_node != rhs.m_node; }
 
@@ -43,74 +48,119 @@ namespace keeler {
         detail::Node<T>* m_node;
     };
 
+    template<typename T>
+    class ConstListIterator {
+      public:
+
+        using value_type = T;
+        using pointer_type = T*;
+        using reference = T&;
+        using difference_type = std::ptrdiff_t;
+        using iterator_category = std::forward_iterator_tag;
+
+        explicit ConstListIterator(const detail::Node<T>* node) : m_node(node) { }
+
+        reference operator*() const {
+            return m_node->value;
+        }
+
+        ConstListIterator& operator++() {
+            m_node = m_node->next;
+            return *this;
+        }
+
+        friend bool operator==(const ConstListIterator& lhs, const ConstListIterator& rhs) { return lhs.m_node == rhs.m_node; }
+        friend bool operator!=(const ConstListIterator& lhs, const ConstListIterator& rhs) { return lhs.m_node != rhs.m_node; }
+
+      private:
+
+        const detail::Node<T>* m_node;
+    };
+
     template <typename T>
     class List {
 
      public:
 
+        using size_type = std::size_t;
         using value = T;
         using reference = value&;
         using iterator = ListIterator<T>;
+        using const_iterator = ConstListIterator<T>;
+
+        List() : header(create_header()) { }
 
         reference front() {
-            return head->value;
+            return header.next->value;
         }
 
         reference back() {
-            return tail->value;
+            return header.prev->value;
         }
 
         bool empty() const {
-            return head == nullptr;
+            return header.next == &header;
+        }
+
+        size_type size() const {
+            return std::distance(cbegin(), cend());
         }
 
         void push_back(const T& value) {
-            const auto to_add = new detail::Node<T> {nullptr, tail, value};
+            auto new_node = new detail::Node<T>();
+            new_node->value = value;
+            new_node->prev = header.prev;
+            new_node->next = &header;
 
-            if (empty()) {
-                head = to_add;
-            } else {
-                tail->next = to_add;
-            }
-
-            tail = to_add;
+            header.prev->next = new_node;
+            header.prev = new_node;
         }
 
         void pop_back() {
-            const auto new_tail = tail->prev;
-            delete tail;
+            auto to_delete = header.prev;
 
-            tail = new_tail;
-            if (tail == nullptr) {
-                head = nullptr;
-            }
+            header.prev->prev->next = &header;
+            header.prev = header.prev->prev;
+
+            delete to_delete;
         }
 
         void clear() {
-            for (auto curr = head; curr != nullptr; /* empty */) {
-                const auto next_node = curr->next;
-                delete curr;
-
-                curr = next_node;
+            for (auto it = begin(); it != end(); ++it) {
+                it.destroy();
             }
 
-            head = nullptr;
-            tail = nullptr;
+            header = create_header();
         }
 
         iterator begin() {
-            return iterator(head);
+            return iterator(header.next);
+        }
+
+        const_iterator cbegin() const {
+            return const_iterator(header.next);
         }
 
         iterator end() {
-            return iterator(nullptr);
+            return iterator(&header);
+        }
+
+        const_iterator cend() const {
+            return const_iterator(&header);
         }
 
      private:
 
-        detail::Node<T>* head = nullptr;
-        detail::Node<T>* tail = nullptr;
+        detail::Node<T> create_header() {
+            detail::Node<T> new_header;
+            
+            new_header.prev = &new_header;
+            new_header.next = &new_header;
 
+            return new_header;
+        }
+
+        detail::Node<T> header;
     };
 
 
