@@ -35,11 +35,6 @@ namespace keeler {
             return *this;
         }
 
-        void destroy() {
-            delete m_node;
-            m_node = nullptr;
-        }
-
         friend bool operator==(const ListIterator& lhs, const ListIterator& rhs) { return lhs.m_node == rhs.m_node; }
         friend bool operator!=(const ListIterator& lhs, const ListIterator& rhs) { return lhs.m_node != rhs.m_node; }
 
@@ -88,7 +83,9 @@ namespace keeler {
         using iterator = ListIterator<T>;
         using const_iterator = ConstListIterator<T>;
 
-        List() : header(create_header()) { }
+        List() {
+            create_header();
+         }
 
         reference front() {
             return header.next->value;
@@ -117,20 +114,27 @@ namespace keeler {
         }
 
         void pop_back() {
-            auto to_delete = header.prev;
+            auto tmp = header.prev;
 
             header.prev->prev->next = &header;
             header.prev = header.prev->prev;
 
-            delete to_delete;
+            delete tmp;
         }
 
         void clear() {
-            for (auto it = begin(); it != end(); ++it) {
-                it.destroy();
+
+            auto tmp = &header;
+            auto next = tmp->next;
+
+            while (next != &header) {
+                tmp = next;
+                next = tmp->next;
+
+                delete tmp;
             }
 
-            header = create_header();
+            create_header();
         }
 
         iterator begin() {
@@ -151,18 +155,44 @@ namespace keeler {
 
      private:
 
-        detail::Node<T> create_header() {
-            detail::Node<T> new_header;
-            
-            new_header.prev = &new_header;
-            new_header.next = &new_header;
-
-            return new_header;
+        void create_header() {
+            header.prev = &header;
+            header.next = &header;
         }
 
         detail::Node<T> header;
     };
 
+    template<typename T>
+    class Vector {
+     public:
+        Vector() = default;
+
+        void push_back(const T& value) {
+            if (sz == capacity) {
+                if (capacity == 0) {
+                    capacity = 128;
+                }
+
+                capacity *= 2;
+
+                const auto tmp_data = data;
+                data = new T[capacity * 2];
+
+                if (tmp_data) {
+                    std::copy_n(tmp_data, capacity, data);
+                }
+
+                data[sz] = value;
+                ++sz;
+            }
+        }
+
+     private:
+        T* data = nullptr;
+        size_t sz = 0;
+        size_t capacity = 0;
+    };
 
 }
 

@@ -3,18 +3,17 @@ LinkedList.Empty 9 0.000297953
 LinkedList.Non_empty 8 0.000317904
 LinkedList.push_single_value_check_front 7 0.000336144
 LinkedList.push_single_value_check_back 6 0.00034562
-LinkedList.push_single_value_pop_back_empty 37 0.00515583
+LinkedList.push_single_value_pop_back_empty 45 0.004692
 LinkedList.push_multiple_values_pop_back_returns_previous_value 1 0.00249398
-LinkedList.empty_list_returns_empty 48 0.0176629
-LinkedList.non_empty_list_returns_non_empty 47 0.010049
-LinkedList.push_single_value_front_returns_value 46 0.00852372
-LinkedList.push_multiple_values_front_returns_head 45 0.0145277
-LinkedList.push_single_value_back_returns_value 44 0.0194559
-LinkedList.push_multiple_values_back_returns_tail 44 0.0170132
-LinkedList.push_multiple_values_pop_back_back_returns_new_tail 40 0.0122298
-LinkedList.push_multiple_values_clear_returns_empty 20 0.00892186
-LinkedList.empty_list_size_returns_zero 32 0.0238143
-LinkedList.list_size_one_returns_one 23 0.029368
-LinkedList.list_size_more_than_one_returns_more_than_one 7 0.0227725
+LinkedList.empty_list_returns_empty 56 0.0163729
+LinkedList.non_empty_list_returns_non_empty 55 0.00925835
+LinkedList.push_single_value_front_returns_value 54 0.00776494
+LinkedList.push_multiple_values_front_returns_head 53 0.0134243
+LinkedList.push_single_value_back_returns_value 52 0.0177618
+LinkedList.push_multiple_values_back_returns_tail 52 0.0156286
+LinkedList.push_multiple_values_pop_back_back_returns_new_tail 48 0.0111463
+LinkedList.push_multiple_values_clear_returns_empty 23 0.00856688
+LinkedList.empty_list_size_returns_zero 40 0.0206865
+LinkedList.list_size_one_returns_one 31 0.0238609
+LinkedList.list_size_more_than_one_returns_more_than_one 15 0.0151612
 ---
-LinkedList.push_multiple_values_clear_returns_empty
