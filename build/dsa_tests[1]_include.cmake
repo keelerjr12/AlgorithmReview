@@ -1,5 +1,0 @@
-if(EXISTS "/home/keelerjr/dev/algorithms-review/build/dsa_tests[1]_tests.cmake")
-  include("/home/keelerjr/dev/algorithms-review/build/dsa_tests[1]_tests.cmake")
-else()
-  add_test(dsa_tests_NOT_BUILT dsa_tests_NOT_BUILT)
-endif()

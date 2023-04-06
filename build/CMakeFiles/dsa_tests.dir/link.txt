@@ -1,1 +1,0 @@
-/usr/bin/c++ -g CMakeFiles/dsa_tests.dir/dsa_tests.cpp.o -o dsa_tests  lib/libgtest_main.a lib/libgtest.a 

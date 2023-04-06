@@ -166,32 +166,60 @@ namespace keeler {
     template<typename T>
     class Vector {
      public:
+        using value = T;
+        using reference = value&;
+        using const_reference = const reference;
+
         Vector() = default;
 
-        void push_back(const T& value) {
-            if (sz == capacity) {
-                if (capacity == 0) {
-                    capacity = 128;
-                }
+        ~Vector() {
+            delete data;
+        }
 
-                capacity *= 2;
+        bool empty() const {
+            return m_size == 0;
+        }
 
-                const auto tmp_data = data;
-                data = new T[capacity * 2];
+        size_t capacity() const {
+            return m_capacity;
+        }
 
-                if (tmp_data) {
-                    std::copy_n(tmp_data, capacity, data);
-                }
+        reference operator[](int n) {
+            return data[n];
+        }
 
-                data[sz] = value;
-                ++sz;
+        void resize(int n) {
+            m_capacity = n;
+
+            if (m_capacity == 0) {
+                m_capacity = 1;
+            }
+
+            const auto tmp_data = data;
+            data = new T[m_capacity];
+
+            if (tmp_data) {
+                std::copy_n(tmp_data, m_capacity, data);
             }
         }
 
+        void push_back(const T& value) {
+            if (full()) {
+                resize(2 * m_capacity);
+            }
+
+            data[m_size] = value;
+            ++m_size;
+        }
+
      private:
+        bool full() const {
+            return m_size == m_capacity;
+        }
+
         T* data = nullptr;
-        size_t sz = 0;
-        size_t capacity = 0;
+        size_t m_size = 0;
+        size_t m_capacity = 0;
     };
 
 }

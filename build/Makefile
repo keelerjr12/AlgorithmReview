@@ -172,17 +172,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named dsa_tests
+# Target rules for targets named tests
 
 # Build rule for target.
-dsa_tests: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dsa_tests
-.PHONY : dsa_tests
+tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests
+.PHONY : tests
 
 # fast build rule for target.
-dsa_tests/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dsa_tests.dir/build.make CMakeFiles/dsa_tests.dir/build
-.PHONY : dsa_tests/fast
+tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
+.PHONY : tests/fast
 
 #=============================================================================
 # Target rules for targets named main
@@ -249,29 +249,29 @@ gtest_main/fast:
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
 .PHONY : gtest_main/fast
 
-dsa_tests.o: dsa_tests.cpp.o
-.PHONY : dsa_tests.o
+list_tests.o: list_tests.cpp.o
+.PHONY : list_tests.o
 
 # target to build an object file
-dsa_tests.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dsa_tests.dir/build.make CMakeFiles/dsa_tests.dir/dsa_tests.cpp.o
-.PHONY : dsa_tests.cpp.o
+list_tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/list_tests.cpp.o
+.PHONY : list_tests.cpp.o
 
-dsa_tests.i: dsa_tests.cpp.i
-.PHONY : dsa_tests.i
+list_tests.i: list_tests.cpp.i
+.PHONY : list_tests.i
 
 # target to preprocess a source file
-dsa_tests.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dsa_tests.dir/build.make CMakeFiles/dsa_tests.dir/dsa_tests.cpp.i
-.PHONY : dsa_tests.cpp.i
+list_tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/list_tests.cpp.i
+.PHONY : list_tests.cpp.i
 
-dsa_tests.s: dsa_tests.cpp.s
-.PHONY : dsa_tests.s
+list_tests.s: list_tests.cpp.s
+.PHONY : list_tests.s
 
 # target to generate assembly for a file
-dsa_tests.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/dsa_tests.dir/build.make CMakeFiles/dsa_tests.dir/dsa_tests.cpp.s
-.PHONY : dsa_tests.cpp.s
+list_tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/list_tests.cpp.s
+.PHONY : list_tests.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
@@ -297,6 +297,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+vector_tests.o: vector_tests.cpp.o
+.PHONY : vector_tests.o
+
+# target to build an object file
+vector_tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/vector_tests.cpp.o
+.PHONY : vector_tests.cpp.o
+
+vector_tests.i: vector_tests.cpp.i
+.PHONY : vector_tests.i
+
+# target to preprocess a source file
+vector_tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/vector_tests.cpp.i
+.PHONY : vector_tests.cpp.i
+
+vector_tests.s: vector_tests.cpp.s
+.PHONY : vector_tests.s
+
+# target to generate assembly for a file
+vector_tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/vector_tests.cpp.s
+.PHONY : vector_tests.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -310,18 +334,21 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
-	@echo "... dsa_tests"
 	@echo "... gmock"
 	@echo "... gmock_main"
 	@echo "... gtest"
 	@echo "... gtest_main"
 	@echo "... main"
-	@echo "... dsa_tests.o"
-	@echo "... dsa_tests.i"
-	@echo "... dsa_tests.s"
+	@echo "... tests"
+	@echo "... list_tests.o"
+	@echo "... list_tests.i"
+	@echo "... list_tests.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... vector_tests.o"
+	@echo "... vector_tests.i"
+	@echo "... vector_tests.s"
 .PHONY : help
 
 

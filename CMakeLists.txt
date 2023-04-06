@@ -13,17 +13,15 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-
-
 enable_testing()
 
-add_executable( dsa_tests dsa_tests.cpp )
+add_executable( tests list_tests.cpp vector_tests.cpp )
 add_executable( main main.cpp )
 
 target_link_libraries(
-  dsa_tests
+  tests
   GTest::gtest_main
 )
 
 include(GoogleTest)
-gtest_discover_tests(dsa_tests)
+gtest_discover_tests(tests)

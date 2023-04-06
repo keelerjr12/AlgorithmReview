@@ -8,7 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/keelerjr/dev/algorithms-review/dsa_tests.cpp" "CMakeFiles/dsa_tests.dir/dsa_tests.cpp.o" "gcc" "CMakeFiles/dsa_tests.dir/dsa_tests.cpp.o.d"
+  "/home/keelerjr/dev/algorithms-review/list_tests.cpp" "CMakeFiles/tests.dir/list_tests.cpp.o" "gcc" "CMakeFiles/tests.dir/list_tests.cpp.o.d"
+  "/home/keelerjr/dev/algorithms-review/vector_tests.cpp" "CMakeFiles/tests.dir/vector_tests.cpp.o" "gcc" "CMakeFiles/tests.dir/vector_tests.cpp.o.d"
   )
 
 # Targets to which this target links.

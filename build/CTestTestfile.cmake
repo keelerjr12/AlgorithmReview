@@ -4,5 +4,5 @@
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
-include("/home/keelerjr/dev/algorithms-review/build/dsa_tests[1]_include.cmake")
+include("/home/keelerjr/dev/algorithms-review/build/tests[1]_include.cmake")
 subdirs("_deps/googletest-build")
