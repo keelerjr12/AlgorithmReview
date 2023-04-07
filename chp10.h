@@ -87,6 +87,10 @@ namespace keeler {
             create_header();
          }
 
+        ~List() { 
+            clear();
+        }
+
         reference front() {
             return header.next->value;
         }
@@ -169,11 +173,28 @@ namespace keeler {
         using value = T;
         using reference = value&;
         using const_reference = const reference;
+        using size_type = std::size_t;
 
         Vector() = default;
 
         ~Vector() {
             delete data;
+        }
+
+        reference front() {
+            return data[0];
+        }
+
+        const_reference front() const {
+            return data[0];
+        }
+
+        reference back() {
+            return data[m_size - 1];
+        }
+
+        const_reference back() const {
+            return data[m_size - 1];
         }
 
         bool empty() const {
@@ -184,7 +205,7 @@ namespace keeler {
             return m_capacity;
         }
 
-        reference operator[](int n) {
+        reference operator[](size_type n) {
             return data[n];
         }
 
