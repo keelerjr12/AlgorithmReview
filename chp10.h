@@ -1,6 +1,11 @@
 #ifndef CHP10_H
 #define CHP10_H
 
+#include <algorithm>
+#include <cstddef>
+#include <iterator>
+#include <vector>
+
 namespace keeler {
 
     namespace detail {
