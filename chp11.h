@@ -15,15 +15,21 @@ namespace keeler {
       return m_size;
     }
 
-    void insert(const T& val) {
+    bool insert(const T& val) {
       if (empty()) {
         m_data = new T[10];
       }
 
       const auto hash = hasher(val);
-      m_data[hash] = val;
+      const auto stored = m_data[hash];
 
+      if (stored == val) {
+        return true;
+      }
+
+      m_data[hash] = val;
       ++m_size;
+      return false;
     }
 
    private:

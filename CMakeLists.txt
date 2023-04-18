@@ -1,8 +1,17 @@
-cmake_minimum_required(VERSION 3.14)
-project(algorithms_review)
+cmake_minimum_required(VERSION 3.25)
+
+set(TARGET_NAME algorithms_review)
+project(${TARGET_NAME})
 
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+#if(MSVC)
+#  target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
+#else()
+#  target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+#endif()
 
 include(FetchContent)
 FetchContent_Declare(
