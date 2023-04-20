@@ -7,7 +7,7 @@ namespace keeler {
 
     template<typename T>
     struct HashNode {
-      HashNode* m_next;
+      HashNode* m_next = nullptr;
       T val;
     };
 
@@ -45,7 +45,31 @@ namespace keeler {
     };
   }
 
+  template <typename T>
   class UnorderedMapIterator {
+
+   public:
+    UnorderedMapIterator(detail::HashNode<T>* node) {
+      std::cout << node << std::endl;
+      m_node = node;
+    }
+
+    UnorderedMapIterator operator++() {
+      m_node = m_node->m_next;
+      return UnorderedMapIterator<T>(m_node);
+    }
+
+    inline bool operator==(const UnorderedMapIterator<T>& rhs) {
+      return m_node == rhs.m_node;
+    }
+
+    bool operator!=(const UnorderedMapIterator<T>& rhs) {
+      return !(*this == rhs);
+    }
+
+   private:
+
+    detail::HashNode<T>* m_node;
 
   };
 
@@ -53,7 +77,7 @@ namespace keeler {
   class UnorderedMap {
    public:
 
-    using iterator = UnorderedMapIterator;
+    using iterator = UnorderedMapIterator<T>;
     
     bool empty() const {
       return size() == 0;
@@ -83,11 +107,16 @@ namespace keeler {
     }
 
     iterator begin() {
-      return UnorderedMapIterator();
+      return iterator(m_before_begin.m_next);
+    }
+
+    iterator end() {
+      return iterator(nullptr);
     }
 
    private:
 
+    detail::HashNode<T> m_before_begin;
     detail::Bucket<T>* m_bkts = nullptr;
     std::size_t m_bkt_ct = 1;
     std::size_t m_el_ct = 0;
