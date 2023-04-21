@@ -89,19 +89,46 @@ namespace keeler {
 
     bool insert(const T& val) {
       if (empty()) {
-        m_bkts = new detail::Bucket<T>[10];
+
+        m_bkts = new detail::HashNode<T>*[10] { nullptr };
         m_bkt_ct = 10;
+
+        const auto hash = hasher(val);
+        m_bkts[hash % m_bkt_ct] = &m_before_begin;
+
+        auto new_node = new detail::HashNode<T>();
+        new_node->val = val;
+        m_before_begin.m_next = new_node;
+
+        ++m_el_ct;
+
+      } else {
+
+        const auto hash = hasher(val);
+        const auto bkt = m_bkts[hash % m_bkt_ct];
+
+        if (bkt == nullptr) {
+          auto new_begin = new detail::HashNode<T>();
+          new_begin->val = val;
+          new_begin->m_next = &m_before_begin;
+          m_before_begin = *new_begin;
+          m_bkts[hash % m_bkt_ct] = &m_before_begin;
+        } else {
+          auto node = bkt->m_next;
+          while (node && (hasher(node->val) == hash)) {
+            if (node->val == val) {
+              return true;
+            }
+            node = node->m_next;
+          }
+          auto new_begin = new detail::HashNode<T>();
+          new_begin->val = val;
+          new_begin->m_next = bkt;
+          m_bkts[hash % m_bkt_ct] = new_begin;
+        }
+          
+        ++m_el_ct;
       }
-
-      const auto hash = hasher(val);
-      const auto bkt = m_bkts[hash % m_bkt_ct];
-
-      if (bkt.contains(val)) {
-        return true;
-      }
-
-      m_bkts[hash % m_bkt_ct].insert(val);
-      ++m_el_ct;
 
       return false;
     }
@@ -117,7 +144,7 @@ namespace keeler {
    private:
 
     detail::HashNode<T> m_before_begin;
-    detail::Bucket<T>* m_bkts = nullptr;
+    detail::HashNode<T>** m_bkts = nullptr;
     std::size_t m_bkt_ct = 1;
     std::size_t m_el_ct = 0;
     Hash hasher;
