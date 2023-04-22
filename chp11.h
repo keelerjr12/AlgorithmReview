@@ -11,38 +11,6 @@ namespace keeler {
       T val;
     };
 
-    template<typename T>
-    class Bucket {
-     public:
-
-      bool contains(const T& val) const {
-        for (auto curr = m_node; curr != nullptr; ++curr) {
-          if (curr->val == val) {
-            return true;
-          }
-        }
-
-        return false;
-      }
-
-      void insert(const T& val) {
-        auto new_node = new HashNode<T>();
-        new_node->val = val;
-
-        if (m_node == nullptr) {
-          m_node = new_node;
-        } else {
-          m_node->m_next = new_node;
-        }
-
-        ++m_size;
-      }
-
-     private:
-
-      HashNode<T>* m_node = nullptr;
-      std::size_t m_size = 0;
-    };
   }
 
   template <typename T>
@@ -97,23 +65,23 @@ namespace keeler {
       }
 
       const auto hash = hasher(val);
-      auto bkt_ptr = &m_bkts[hash % m_bkt_ct];
+      auto& bkt_ptr = m_bkts[hash % m_bkt_ct];
 
-      if (*bkt_ptr == nullptr) {
+      if (bkt_ptr == nullptr) {
         auto new_begin = new detail::HashNode<T>();
         new_begin->val = val;
         new_begin->m_next = m_before_begin.m_next;
 
         if (m_before_begin.m_next) {
-          const auto prev_begin_bkt_ptr = &m_bkts[hasher(m_before_begin.m_next->val) % m_bkt_ct];
-          *prev_begin_bkt_ptr = new_begin;
+          auto& prev_begin_bkt_ptr = m_bkts[hasher(m_before_begin.m_next->val) % m_bkt_ct];
+          prev_begin_bkt_ptr = new_begin;
         }
 
         m_before_begin.m_next = new_begin;
-        *bkt_ptr = &m_before_begin;
+        bkt_ptr = &m_before_begin;
 
       } else {
-        auto node = (*bkt_ptr)->m_next;
+        auto node = bkt_ptr->m_next;
         while (node && (hasher(node->val) == hash)) {
           if (node->val == val) {
             return true;
@@ -123,8 +91,8 @@ namespace keeler {
 
         auto new_begin = new detail::HashNode<T>();
         new_begin->val = val;
-        new_begin->m_next = (*bkt_ptr)->m_next;
-        (*bkt_ptr)->m_next = new_begin;
+        new_begin->m_next = bkt_ptr->m_next;
+        bkt_ptr->m_next = new_begin;
       }
       
       ++m_el_ct;
