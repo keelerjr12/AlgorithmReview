@@ -6,6 +6,7 @@ project(${TARGET_NAME})
 # GoogleTest requires at least C++14
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_CXX_FLAGS "-g")
 
 #if(MSVC)
 #  target_compile_options(${TARGET_NAME} PRIVATE /W4 /WX)
