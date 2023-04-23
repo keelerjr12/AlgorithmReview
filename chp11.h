@@ -5,42 +5,43 @@ namespace keeler {
 
   namespace detail {
 
-    template<typename T>
+    template<typename Value>
     struct HashNode {
       HashNode* m_next = nullptr;
-      T val;
+      Value val;
+      std::size_t hash_code;
     };
 
   }
 
-  template <typename T>
+  template <typename Value>
   class UnorderedMapIterator {
 
    public:
-    UnorderedMapIterator(detail::HashNode<T>* node) {
+    UnorderedMapIterator(detail::HashNode<Value>* node) {
       m_node = node;
     }
 
     UnorderedMapIterator operator++() {
       m_node = m_node->m_next;
-      return UnorderedMapIterator<T>(m_node);
+      return UnorderedMapIterator<Value>(m_node);
     }
 
-    T& operator*() {
+    Value& operator*() {
       return m_node->val;
     }
 
-    inline bool operator==(const UnorderedMapIterator<T>& rhs) {
+    inline bool operator==(const UnorderedMapIterator<Value>& rhs) {
       return m_node == rhs.m_node;
     }
 
-    inline bool operator!=(const UnorderedMapIterator<T>& rhs) {
+    inline bool operator!=(const UnorderedMapIterator<Value>& rhs) {
       return !(*this == rhs);
     }
 
    private:
 
-    detail::HashNode<T>* m_node;
+    detail::HashNode<Value>* m_node;
 
   };
 
@@ -48,7 +49,10 @@ namespace keeler {
   class UnorderedMap {
    public:
 
-    using iterator = UnorderedMapIterator<T>;
+    using value_type = std::pair<const Key, T>;
+    using iterator = UnorderedMapIterator<value_type>;
+
+    using hash_node = detail::HashNode<value_type>;
     
     bool empty() const {
       return size() == 0;
@@ -58,22 +62,22 @@ namespace keeler {
       return m_el_ct;
     }
 
-    bool insert(const T& val) {
+    bool insert(const value_type& val) {
       if (empty()) {
-        m_bkts = new detail::HashNode<T>*[10] { nullptr };
+        m_bkts = new hash_node*[10] { nullptr };
         m_bkt_ct = 10;
       }
 
-      const auto hash = hasher(val);
+      const auto hash = hasher(val.first);
       auto& bkt_ptr = m_bkts[hash % m_bkt_ct];
 
+      auto new_begin = new hash_node { nullptr, val, hash  };
+
       if (bkt_ptr == nullptr) {
-        auto new_begin = new detail::HashNode<T>();
-        new_begin->val = val;
         new_begin->m_next = m_before_begin.m_next;
 
         if (m_before_begin.m_next) {
-          auto& prev_begin_bkt_ptr = m_bkts[hasher(m_before_begin.m_next->val) % m_bkt_ct];
+          auto& prev_begin_bkt_ptr = m_bkts[m_before_begin.m_next->hash_code % m_bkt_ct];
           prev_begin_bkt_ptr = new_begin;
         }
 
@@ -82,15 +86,14 @@ namespace keeler {
 
       } else {
         auto node = bkt_ptr->m_next;
-        while (node && (hasher(node->val) == hash)) {
+        while (node && (node->hash_code == hash)) {
           if (node->val == val) {
             return true;
           }
+
           node = node->m_next;
         }
 
-        auto new_begin = new detail::HashNode<T>();
-        new_begin->val = val;
         new_begin->m_next = bkt_ptr->m_next;
         bkt_ptr->m_next = new_begin;
       }
@@ -110,8 +113,8 @@ namespace keeler {
 
    private:
 
-    detail::HashNode<T> m_before_begin;
-    detail::HashNode<T>** m_bkts = nullptr;
+    hash_node m_before_begin;
+    hash_node** m_bkts = nullptr;
     std::size_t m_bkt_ct = 1;
     std::size_t m_el_ct = 0;
     Hash hasher;
