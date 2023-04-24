@@ -31,11 +31,15 @@ namespace keeler {
       return m_node->val;
     }
 
-    inline bool operator==(const UnorderedMapIterator<Value>& rhs) {
+    Value* operator->() {
+      return &m_node->val;
+    }
+
+    inline bool operator==(const UnorderedMapIterator<Value>& rhs) const {
       return m_node == rhs.m_node;
     }
 
-    inline bool operator!=(const UnorderedMapIterator<Value>& rhs) {
+    inline bool operator!=(const UnorderedMapIterator<Value>& rhs) const {
       return !(*this == rhs);
     }
 
@@ -45,12 +49,51 @@ namespace keeler {
 
   };
 
+  template <typename Value>
+  class UnorderedMapLocalIterator {
+
+   public:
+
+    using size_type = std::size_t;
+
+    explicit UnorderedMapLocalIterator(detail::HashNode<Value>* bkt) {
+      m_node = bkt;
+    }
+
+    UnorderedMapLocalIterator operator++() {
+      m_node = m_node->m_next;
+      return UnorderedMapLocalIterator<Value>(m_node);
+    }
+
+    Value& operator*() {
+      return m_node->val;
+    }
+
+    Value* operator->() {
+      return &m_node->val;
+    }
+
+    inline bool operator==(const UnorderedMapLocalIterator<Value>& rhs) const {
+      return m_node == rhs.m_node;
+    }
+
+    inline bool operator!=(const UnorderedMapLocalIterator<Value>& rhs) const {
+      return !(*this == rhs);
+    }
+
+   private:
+
+    detail::HashNode<Value>* m_node;
+  };
+
   template<typename Key, typename T, typename Hash = std::hash<Key> >
   class UnorderedMap {
    public:
 
     using value_type = std::pair<const Key, T>;
     using iterator = UnorderedMapIterator<value_type>;
+    using local_iterator = UnorderedMapLocalIterator<value_type>;
+    using size_type = std::size_t;
 
     using hash_node = detail::HashNode<value_type>;
     
@@ -58,8 +101,25 @@ namespace keeler {
       return size() == 0;
     }
 
-    std::size_t size() const {
+    size_type size() const {
       return m_el_ct;
+    }
+
+    iterator begin() {
+      return iterator(m_before_begin.m_next);
+    }
+
+    iterator end() {
+      return iterator(nullptr);
+    }
+
+    local_iterator begin(size_type n) {
+      auto bkt = m_bkts[n];
+      return local_iterator(bkt->m_next);
+    }
+
+    local_iterator end(size_type n) {
+      return local_iterator(nullptr);
     }
 
     bool insert(const value_type& val) {
@@ -68,12 +128,13 @@ namespace keeler {
         m_bkt_ct = 10;
       }
 
-      const auto hash = hasher(val.first);
-      auto& bkt_ptr = m_bkts[hash % m_bkt_ct];
+      const auto bkt = bkt_idx(val.first);
+      auto& bkt_ptr = m_bkts[bkt];
 
+      const auto hash = hasher(val.first);
       auto new_begin = new hash_node { nullptr, val, hash  };
 
-      if (bkt_ptr == nullptr) {
+      if (!bkt_ptr) {
         new_begin->m_next = m_before_begin.m_next;
 
         if (m_before_begin.m_next) {
@@ -103,15 +164,30 @@ namespace keeler {
       return false;
     }
 
-    iterator begin() {
-      return iterator(m_before_begin.m_next);
-    }
+    iterator find(const Key& key) {
+      const auto bkt = bkt_idx(key);
+      auto begin = m_bkts[bkt];
 
-    iterator end() {
-      return iterator(nullptr);
+      if (!begin) {
+        return end();
+      }
+
+      const auto hash = hasher(key);
+      for (auto node = begin->m_next; node && (node->hash_code == hash); node = node->m_next) {
+        if (node->val.first == key) {
+          return iterator(node);
+        }
+      }
+      
+      return end();
     }
 
    private:
+
+    size_type bkt_idx(const Key& key) const {
+      const auto hash = hasher(key); 
+      return hash % m_bkt_ct;
+    }
 
     hash_node m_before_begin;
     hash_node** m_bkts = nullptr;

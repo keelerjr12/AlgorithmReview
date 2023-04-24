@@ -7,9 +7,10 @@ int main() {
   map.insert({3, "3"});
   map.insert({11, "11"});
 
-  for (auto it = map.begin(); it != map.end(); ++it)
+  const auto bkt = 3;
+  for (auto it = map.begin(bkt); it != map.end(bkt); ++it)
   {
-    std::cout << "(" << (*it).first << ", " << (*it).second << "), ";
+    std::cout << "(" << it->first << ", " << it->second << "), ";
   }
 
   std::cout << "\n";
