@@ -22,9 +22,9 @@ namespace keeler {
       m_node = node;
     }
 
-    UnorderedMapIterator operator++() {
+    UnorderedMapIterator& operator++() {
       m_node = m_node->m_next;
-      return UnorderedMapIterator<Value>(m_node);
+      return *this;
     }
 
     Value& operator*() {
@@ -35,12 +35,16 @@ namespace keeler {
       return &m_node->val;
     }
 
-    inline bool operator==(const UnorderedMapIterator<Value>& rhs) const {
-      return m_node == rhs.m_node;
+    friend inline bool operator==(const UnorderedMapIterator<Value>& lhs, 
+        const UnorderedMapIterator<Value>& rhs) {
+
+      return lhs.m_node == rhs.m_node;
     }
 
-    inline bool operator!=(const UnorderedMapIterator<Value>& rhs) const {
-      return !(*this == rhs);
+    friend inline bool operator!=(const UnorderedMapIterator<Value>& lhs, 
+        const UnorderedMapIterator<Value>& rhs) {
+
+      return !(lhs == rhs);
     }
 
    private:
@@ -56,13 +60,20 @@ namespace keeler {
 
     using size_type = std::size_t;
 
-    explicit UnorderedMapLocalIterator(detail::HashNode<Value>* bkt) {
-      m_node = bkt;
-    }
+    explicit UnorderedMapLocalIterator(detail::HashNode<Value>* node, size_type bkt, size_type bkt_ct)
+      : m_node(node), m_bkt(bkt), m_bkt_ct(bkt_ct) { }
 
-    UnorderedMapLocalIterator operator++() {
+    UnorderedMapLocalIterator& operator++() {
       m_node = m_node->m_next;
-      return UnorderedMapLocalIterator<Value>(m_node);
+
+      if (m_node) {
+        const auto next_node_bkt = m_node->hash_code % m_bkt_ct;
+        if (next_node_bkt != m_bkt) {
+          m_node = nullptr;
+        }
+      }
+
+      return *this;
     }
 
     Value& operator*() {
@@ -73,17 +84,23 @@ namespace keeler {
       return &m_node->val;
     }
 
-    inline bool operator==(const UnorderedMapLocalIterator<Value>& rhs) const {
-      return m_node == rhs.m_node;
+    friend inline bool operator==(const UnorderedMapLocalIterator<Value>& lhs, 
+        const UnorderedMapLocalIterator<Value>& rhs) {
+
+      return lhs.m_node == rhs.m_node;
     }
 
-    inline bool operator!=(const UnorderedMapLocalIterator<Value>& rhs) const {
-      return !(*this == rhs);
+    friend inline bool operator!=(const UnorderedMapLocalIterator<Value>& lhs, 
+        const UnorderedMapLocalIterator<Value>& rhs) {
+
+      return !(lhs == rhs);
     }
 
    private:
 
     detail::HashNode<Value>* m_node;
+    size_type m_bkt;
+    size_type m_bkt_ct;
   };
 
   template<typename Key, typename T, typename Hash = std::hash<Key> >
@@ -92,6 +109,7 @@ namespace keeler {
 
     using value_type = std::pair<const Key, T>;
     using iterator = UnorderedMapIterator<value_type>;
+    using const_iterator = const UnorderedMapIterator<value_type>;
     using local_iterator = UnorderedMapLocalIterator<value_type>;
     using size_type = std::size_t;
 
@@ -113,13 +131,17 @@ namespace keeler {
       return iterator(nullptr);
     }
 
+    const_iterator cend() const {
+      return const_iterator(nullptr);
+    }
+
     local_iterator begin(size_type n) {
       auto bkt = m_bkts[n];
-      return local_iterator(bkt->m_next);
+      return local_iterator(bkt->m_next, n, m_bkt_ct);
     }
 
     local_iterator end(size_type n) {
-      return local_iterator(nullptr);
+      return local_iterator(nullptr, n, m_bkt_ct);
     }
 
     bool insert(const value_type& val) {
@@ -165,21 +187,17 @@ namespace keeler {
     }
 
     iterator find(const Key& key) {
-      const auto bkt = bkt_idx(key);
-      auto begin = m_bkts[bkt];
+      const auto node = find_node(key);
+      return iterator(node);
+    }
 
-      if (!begin) {
-        return end();
-      }
+    const_iterator find(const Key& key) const {
+      const auto node = find_node(key);
+      return const_iterator(node);
+    }
 
-      const auto hash = hasher(key);
-      for (auto node = begin->m_next; node && (node->hash_code == hash); node = node->m_next) {
-        if (node->val.first == key) {
-          return iterator(node);
-        }
-      }
-      
-      return end();
+    bool contains(const Key& key) const {
+      return find(key) != cend();
     }
 
    private:
@@ -187,6 +205,26 @@ namespace keeler {
     size_type bkt_idx(const Key& key) const {
       const auto hash = hasher(key); 
       return hash % m_bkt_ct;
+    }
+
+    hash_node* find_node(const Key& key) const {
+      const auto bkt = bkt_idx(key);
+      auto begin = m_bkts[bkt];
+
+      if (!begin) {
+        return nullptr;
+      }
+
+      // TODO: This needs major refactoring!
+      const auto hash = hasher(key);
+      for (auto node = begin->m_next; node && (node->hash_code % m_bkt_ct == hash % m_bkt_ct); node = node->m_next) {
+
+        if (node->val.first == key) {
+          return node;
+        }
+      }
+      
+      return nullptr;
     }
 
     hash_node m_before_begin;

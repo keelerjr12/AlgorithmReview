@@ -7,10 +7,12 @@ int main() {
   map.insert({3, "3"});
   map.insert({11, "11"});
 
-  const auto bkt = 3;
-  for (auto it = map.begin(bkt); it != map.end(bkt); ++it)
-  {
-    std::cout << "(" << it->first << ", " << it->second << "), ";
+  for (const int x : {1, 2, 3}) {
+    if (map.contains(x)) {
+      std::cout << x << " was found\n";
+    } else {
+      std::cout << x << " was NOT found\n";
+    }
   }
 
   std::cout << "\n";
