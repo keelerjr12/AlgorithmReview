@@ -114,6 +114,10 @@ namespace keeler {
     using size_type = std::size_t;
 
     using hash_node = detail::HashNode<value_type>;
+
+    ~UnorderedMap() {
+      clear();
+    }
     
     bool empty() const {
       return size() == 0;
@@ -144,6 +148,19 @@ namespace keeler {
       return local_iterator(nullptr, n, m_bkt_ct);
     }
 
+    void clear() noexcept {
+      for (auto node = begin_node(); node; /* empty */) {
+        const auto next_node = node->m_next;
+        delete node;
+
+        node = next_node;
+      }
+
+      delete [] m_bkts;
+      m_bkts = nullptr;
+    }
+
+    // TODO: This needs major refactoring!
     bool insert(const value_type& val) {
       if (empty()) {
         m_bkts = new hash_node*[10] { nullptr };
@@ -201,6 +218,10 @@ namespace keeler {
     }
 
    private:
+
+    hash_node* begin_node() const {
+      return m_before_begin.m_next;
+    }
 
     size_type bkt_idx(const Key& key) const {
       const auto hash = hasher(key); 
