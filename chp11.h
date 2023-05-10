@@ -1,3 +1,6 @@
+#ifndef CHP11_H
+#define CHP11_H
+
 #include <cstddef>
 #include <functional>
 
@@ -255,3 +258,5 @@ namespace keeler {
     Hash hasher;
   };
 }
+
+#endif // CHP11_H
