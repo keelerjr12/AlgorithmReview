@@ -37,7 +37,21 @@ namespace keeler {
     }
 
     TreeIterator<Value> operator++() {
-      m_node = m_node->r;
+      if (m_node->r) { 
+        m_node = m_node->r;
+
+        for (auto curr = m_node; curr; curr = curr->l) {
+          m_node = curr;
+        }
+
+      } else {
+        while (m_node && m_node->p &&  m_node->p->r == m_node) {
+          m_node = m_node->p;
+        }
+
+        m_node = m_node->p;
+      }
+
       return *this;
     }
 
@@ -64,9 +78,9 @@ namespace keeler {
     using iterator = TreeIterator<value_type>;
 
     iterator begin() noexcept {
-      auto left_node = &nil;
+      detail::node<value_type>* left_node = nullptr;
 
-      for (auto curr = root; curr != &nil; curr = curr->l) {
+      for (auto curr = root; curr; curr = curr->l) {
         left_node = curr;
       }
 
@@ -74,11 +88,11 @@ namespace keeler {
     }
 
     iterator end() noexcept {
-      return iterator(&nil);
+      return iterator(nullptr);
     }
     
     bool empty() const noexcept {
-      return root == &nil;
+      return root == nullptr;
     }
 
     size_type size() const noexcept {
@@ -86,13 +100,13 @@ namespace keeler {
     }
 
     void insert(const value_type& value) {
-      const auto new_node = new detail::node<value_type> {&nil, &nil, &nil, value, false };
+      const auto new_node = new detail::node<value_type> {nullptr, nullptr, nullptr, value, false };
 
       //find insert point
       auto curr = root;
-      auto parent = &nil;
+      detail::node<value_type>* parent = nullptr;
 
-      while (curr != &nil) {
+      while (curr) {
         parent = curr;
         if (value.first <= curr->value.first) {
           curr = curr->l;
@@ -101,13 +115,15 @@ namespace keeler {
         }
       }
 
-      if (value.first <= parent->value.first) {
-        parent->l = new_node;
-        new_node->p = parent;
-      } else {
-        parent->r = new_node;
-        new_node->p = parent;
+      if (parent) {
+        if (value.first <= parent->value.first) {
+          parent->l = new_node;
+        } else {
+          parent->r = new_node;
+        }
       }
+
+      new_node->p = parent;
       
       //handle root
       if (empty()) {
@@ -119,8 +135,7 @@ namespace keeler {
 
    private:
 
-    detail::node<value_type> nil;
-    detail::node<value_type>* root = &nil;
+    detail::node<value_type>* root = nullptr;
 
     size_type m_sz = 0;
   };
