@@ -21,7 +21,6 @@ namespace keeler {
     };
 
   }
-  
   template <typename Value>
   class TreeIterator {
    public:
@@ -36,25 +35,6 @@ namespace keeler {
       return &m_node->value;
     }
 
-    TreeIterator<Value> operator++() {
-      if (m_node->r) { 
-        m_node = m_node->r;
-
-        for (auto curr = m_node; curr; curr = curr->l) {
-          m_node = curr;
-        }
-
-      } else {
-        while (m_node && m_node->p &&  m_node->p->r == m_node) {
-          m_node = m_node->p;
-        }
-
-        m_node = m_node->p;
-      }
-
-      return *this;
-    }
-
     friend bool operator==(const TreeIterator& lhs, const TreeIterator& rhs) {
       return lhs.m_node == rhs.m_node;
     }
@@ -63,10 +43,73 @@ namespace keeler {
       return !(lhs == rhs);
     }
 
+   protected:
+    
+    detail::node<Value>*& get_node() {  return m_node; }
+
    private:
 
     detail::node<Value>* m_node;
   };
+  
+  template <typename Value>
+  class PreorderTreeIterator : public TreeIterator<Value> {
+   public:
+
+    PreorderTreeIterator(detail::node<Value>* node) : TreeIterator<Value> {node} { }
+
+    PreorderTreeIterator<Value> operator++() {
+      auto& node = this->get_node();
+
+      if (node->r) { 
+        node = node->r;
+
+        for (auto curr = node; curr; curr = curr->l) {
+          node = curr;
+        }
+
+      } else {
+        while (node && node->p && node->p->r == node) {
+          node = node->p;
+        }
+
+        node = node->p;
+      }
+
+      return *this;
+    }
+
+  };
+
+  template <typename Value>
+  class InorderTreeIterator : public TreeIterator<Value> {
+   public:
+
+    InorderTreeIterator(detail::node<Value>* node) : TreeIterator<Value> {node} { }
+
+    InorderTreeIterator<Value> operator++() {
+      auto& node = this->get_node();
+
+      if (node->r) { 
+        node = node->r;
+
+        for (auto curr = node; curr; curr = curr->l) {
+          node = curr;
+        }
+
+      } else {
+        while (node && node->p && node->p->r == node) {
+          node = node->p;
+        }
+
+        node = node->p;
+      }
+
+      return *this;
+    }
+
+  };
+
 
   template<typename Key, typename T>
   class RbTree {
@@ -75,7 +118,7 @@ namespace keeler {
 
     using size_type = std::size_t;
     using value_type = std::pair<const Key, T>;
-    using iterator = TreeIterator<value_type>;
+    using iterator = InorderTreeIterator<value_type>;
 
     iterator begin() noexcept {
       detail::node<value_type>* left_node = nullptr;
