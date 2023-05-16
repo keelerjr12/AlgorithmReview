@@ -1,6 +1,7 @@
 #ifndef CHP13_H
 #define CHP13_H
 
+#include <cstddef>
 #include <utility>
 
 #include <iostream>
@@ -8,6 +9,11 @@
 namespace keeler {
 
   namespace detail {
+
+    enum class Color {
+      RED,
+      BLACK
+    };
 
     template <typename Value>
     struct node {
@@ -17,7 +23,7 @@ namespace keeler {
 
       Value value;
 
-      bool black = false;
+      Color color = Color::RED;
     };
 
   }
@@ -56,28 +62,37 @@ namespace keeler {
   class PreorderTreeIterator : public TreeIterator<Value> {
    public:
 
+    using size_type = std::size_t;
+
     PreorderTreeIterator(detail::node<Value>* node) : TreeIterator<Value> {node} { }
 
     PreorderTreeIterator<Value> operator++() {
       auto& node = this->get_node();
 
-      if (node->r) { 
-        node = node->r;
-
-        for (auto curr = node; curr; curr = curr->l) {
-          node = curr;
-        }
+      if (node->l) { 
+        node = node->l;
 
       } else {
-        while (node && node->p && node->p->r == node) {
+        while (node && node->p && node->p->l == node) {
           node = node->p;
+          --m_depth;
         }
 
-        node = node->p;
+        node = node->r;
       }
+
+      ++m_depth;
 
       return *this;
     }
+
+    size_type depth() const { return m_depth; }
+
+    detail::Color color() { return this->get_node()->color; }
+
+   private:
+
+    size_type m_depth = 0;
 
   };
 
@@ -119,9 +134,13 @@ namespace keeler {
     using size_type = std::size_t;
     using value_type = std::pair<const Key, T>;
     using iterator = InorderTreeIterator<value_type>;
+    using preorder_iterator = PreorderTreeIterator<value_type>;
+
+    using node = detail::node<value_type>;
+    using node_ptr = node*;
 
     iterator begin() noexcept {
-      detail::node<value_type>* left_node = nullptr;
+      node_ptr left_node = nullptr;
 
       for (auto curr = root; curr; curr = curr->l) {
         left_node = curr;
@@ -133,6 +152,14 @@ namespace keeler {
     iterator end() noexcept {
       return iterator(nullptr);
     }
+
+    preorder_iterator preorder_begin() noexcept {
+      return preorder_iterator(root);
+    }
+
+    preorder_iterator preorder_end() noexcept {
+      return preorder_iterator(nullptr);
+    }
     
     bool empty() const noexcept {
       return root == nullptr;
@@ -143,20 +170,9 @@ namespace keeler {
     }
 
     void insert(const value_type& value) {
-      const auto new_node = new detail::node<value_type> {nullptr, nullptr, nullptr, value, false };
+      const auto new_node = new node {nullptr, nullptr, nullptr, value, detail::Color::RED };
 
-      //find insert point
-      auto curr = root;
-      detail::node<value_type>* parent = nullptr;
-
-      while (curr) {
-        parent = curr;
-        if (value.first <= curr->value.first) {
-          curr = curr->l;
-        } else {
-          curr = curr->r;
-        }
-      }
+      auto parent = find_parent_of(value);
 
       if (parent) {
         if (value.first <= parent->value.first) {
@@ -173,13 +189,42 @@ namespace keeler {
         root = new_node;
       }
 
+      insert_fixup(new_node);
+
       ++m_sz;
     }
 
    private:
 
-    detail::node<value_type>* root = nullptr;
+    node_ptr find_parent_of(const value_type& value) const noexcept {
+      auto curr = root;
+      node_ptr parent = nullptr;
 
+      while (curr) {
+        parent = curr;
+        if (value.first <= curr->value.first) {
+          curr = curr->l;
+        } else {
+          curr = curr->r;
+        }
+      }
+
+      return parent;
+    }
+
+    void insert_fixup(node_ptr x) {
+      while (x) {
+        if (x->p && x->p->p && x->p->p->r && x->p->p->r->color == detail::Color::RED) {
+          std::cout << "HERE\n";
+          x->p->color = detail::Color::BLACK;
+          x->p->p->r->color = detail::Color::BLACK;
+          x->p->p->color = detail::Color::RED;
+          x = x->p->p;
+        }
+      }
+    }
+
+    node_ptr root = nullptr;
     size_type m_sz = 0;
   };
 }
