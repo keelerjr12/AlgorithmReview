@@ -71,17 +71,31 @@ namespace keeler {
 
       if (node->l) { 
         node = node->l;
-
+        ++m_depth;
+      } else if (node->r) {
+        node = node->r;
+        ++m_depth;
       } else {
-        while (node && node->p && node->p->l == node) {
+
+        // backtrack left path
+        while (node && node->p && node->p->l == node && !node->p->r) {
           node = node->p;
           --m_depth;
         }
 
-        node = node->r;
-      }
+        // backtrack right path
+        while (node && node->p && node->p->r == node) {
+          node = node->p;
+          --m_depth;
+        }
 
-      ++m_depth;
+        // go up one more
+        node = node->p;
+
+        // go right if able
+        if (node)
+          node = node->r;
+      }
 
       return *this;
     }
@@ -189,7 +203,7 @@ namespace keeler {
         root = new_node;
       }
 
-      insert_fixup(new_node);
+      insert_fixup(root, new_node);
 
       ++m_sz;
     }
@@ -212,16 +226,30 @@ namespace keeler {
       return parent;
     }
 
-    void insert_fixup(node_ptr x) {
-      while (x) {
-        if (x->p && x->p->p && x->p->p->r && x->p->p->r->color == detail::Color::RED) {
-          std::cout << "HERE\n";
-          x->p->color = detail::Color::BLACK;
-          x->p->p->r->color = detail::Color::BLACK;
-          x->p->p->color = detail::Color::RED;
-          x = x->p->p;
+    void insert_fixup(node_ptr root, node_ptr x) {
+      while (x->p && x->p->color == detail::Color::RED) {
+        if (x->p->p && x->p->p->l == x->p) {
+          if (x->p->p->r && x->p->p->r->color == detail::Color::RED) {
+            std::cout << "HERE LEFT\n";
+            x->p->color = detail::Color::BLACK;
+            x->p->p->r->color = detail::Color::BLACK;
+            x->p->p->color = detail::Color::RED;
+            x = x->p->p;
+          }
+        } else {
+          if (x->p->p && x->p->p->r == x->p) {
+            if (x->p->p->l && x->p->p->l->color == detail::Color::RED) {
+              std::cout << "HERE RIGHT\n";
+              x->p->color = detail::Color::BLACK;
+              x->p->p->l->color = detail::Color::BLACK;
+              x->p->p->color = detail::Color::RED;
+              x = x->p->p;
+            }
+          }
         }
       }
+
+      root->color = detail::Color::BLACK;
     }
 
     node_ptr root = nullptr;
