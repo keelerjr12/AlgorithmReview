@@ -45,6 +45,13 @@ namespace keeler {
       return lhs.m_node == rhs.m_node;
     }
 
+<<<<<<< HEAD
+=======
+    friend bool operator!=(const TreeIterator& lhs, const TreeIterator& rhs) {
+      return !(lhs == rhs);
+    }
+
+>>>>>>> 5438969caa2f114f83f29f86c13bcfe670100506
    protected:
     
     detail::node<Value>*& get_node() {  return m_node; }
@@ -222,6 +229,7 @@ namespace keeler {
       return parent;
     }
 
+<<<<<<< HEAD
     void left_rotate(node_ptr x) {
       auto y = x->r;
       x->r = y->l;
@@ -264,10 +272,18 @@ namespace keeler {
       while (x->p && x->p->color == detail::Color::RED) {
         if (x->p->p && x->p->p->l == x->p) {
           if (x->p->p->r && x->p->p->r->color == detail::Color::RED) {      // case 1
+=======
+    void insert_fixup(node_ptr root, node_ptr x) {
+      while (x->p && x->p->color == detail::Color::RED) {
+        if (x->p->p && x->p->p->l == x->p) {
+          if (x->p->p->r && x->p->p->r->color == detail::Color::RED) {
+            std::cout << "HERE LEFT\n";
+>>>>>>> 5438969caa2f114f83f29f86c13bcfe670100506
             x->p->color = detail::Color::BLACK;
             x->p->p->r->color = detail::Color::BLACK;
             x->p->p->color = detail::Color::RED;
             x = x->p->p;
+<<<<<<< HEAD
           } else {
             if (x->p->r == x) {                                             // case 2
               x = x->p;
@@ -281,11 +297,19 @@ namespace keeler {
         } else {
           if (x->p->p && x->p->p->r == x->p) {                              // case 1
             if (x->p->p->l && x->p->p->l->color == detail::Color::RED) {
+=======
+          }
+        } else {
+          if (x->p->p && x->p->p->r == x->p) {
+            if (x->p->p->l && x->p->p->l->color == detail::Color::RED) {
+              std::cout << "HERE RIGHT\n";
+>>>>>>> 5438969caa2f114f83f29f86c13bcfe670100506
               x->p->color = detail::Color::BLACK;
               x->p->p->l->color = detail::Color::BLACK;
               x->p->p->color = detail::Color::RED;
               x = x->p->p;
             }
+<<<<<<< HEAD
           } else {
             if (x->p->l == x) {                                             // case 2
               x = x->p;
@@ -295,6 +319,8 @@ namespace keeler {
             x->p->color = detail::Color::BLACK;                             // case 3
             x->p->p->color = detail::Color::RED;
             left_rotate(x->p->p);                                       
+=======
+>>>>>>> 5438969caa2f114f83f29f86c13bcfe670100506
           }
         }
       }
