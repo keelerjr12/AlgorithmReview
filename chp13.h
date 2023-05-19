@@ -2,9 +2,8 @@
 #define CHP13_H
 
 #include <cstddef>
+#include <stack>
 #include <utility>
-
-#include <iostream>
 
 namespace keeler {
 
@@ -149,6 +148,10 @@ namespace keeler {
     using node = detail::node<value_type>;
     using node_ptr = node*;
 
+    ~RbTree() noexcept {
+      clear();
+    }
+
     iterator begin() noexcept {
       node_ptr left_node = nullptr;
 
@@ -177,6 +180,33 @@ namespace keeler {
 
     size_type size() const noexcept {
       return m_sz;
+    }
+
+    void clear() noexcept {
+      if (!root) {
+        return;
+      }
+
+      std::stack<node_ptr> nodes;
+      nodes.push(root);
+
+      while (!nodes.empty()) {
+        auto curr = nodes.top();
+        nodes.pop();
+
+        if (curr->r) {
+          nodes.push(curr->r);
+        }
+
+        if (curr->l) {
+          nodes.push(curr->l);
+        }
+
+        delete curr;
+        m_sz = 0;
+        root = nullptr;
+      }
+
     }
 
     void insert(const value_type& value) {
