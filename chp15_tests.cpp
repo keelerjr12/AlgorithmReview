@@ -2,12 +2,26 @@
 #include "chp15.h"
 #include <vector>
 
-TEST(DynamicProgramming, rod_cut_returns_zero) {
+TEST(DynamicProgramming, naive_top_down_recursive_rod_cut_no_cut_returns_max_revenue) {
 
-  std::vector<int> prices {1, 2, 3, 4, 5 };
-  bool is_empty = true;
+  std::vector<int> prices {0, 0, 0, 0, 10};
 
-  const auto revenue = rod_cut(prices, 5);
+  const auto size = 5;
+  const auto EXP_REV = 10;
 
-  EXPECT_TRUE(is_empty);
+  const auto revenue = naive_top_down_recursive_rod_cut(prices, size);
+
+  EXPECT_EQ(EXP_REV, revenue);
+}
+
+TEST(DynamicProgramming, top_down_memoization_recursive_rod_cut_no_cut_returns_max_revenue) {
+
+  std::vector<int> prices {0, 0, 0, 0, 10};
+
+  const auto size = 5;
+  const auto EXP_REV = 10;
+
+  const auto revenue = top_down_memoization_rod_cut(prices, size);
+
+  EXPECT_EQ(EXP_REV, revenue);
 }

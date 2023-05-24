@@ -26,7 +26,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable( tests list_tests.cpp rb_tree_tests.cpp unordered_map_tests.cpp vector_tests.cpp chp15_tests.cpp chp15.cpp )
-add_executable( main main.cpp )
+add_executable( main chp15.cpp main.cpp )
 
 target_link_libraries(
   tests

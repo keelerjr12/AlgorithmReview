@@ -3,6 +3,8 @@
 
 #include <vector>
 
-int rod_cut(const std::vector<int>& prices, int n);
+int naive_top_down_recursive_rod_cut(const std::vector<int>& prices, int n);
+
+int top_down_memoization_rod_cut(const std::vector<int>& prices, int n);
 
 #endif // CHP_15_H
