@@ -45,3 +45,20 @@ int top_down_memoization_rod_cut(const std::vector<int>& prices, int n) {
   std::vector<int> revenues(n, -1);
   return top_down_memoization_rod_cut_aux(prices, revenues, n);
 }
+
+int bottom_up_rod_cut(const std::vector<int>& prices, int n) {
+  std::vector<int> revenues(n + 1, 0);
+
+  for (auto i = 1; i <= n; ++i) {
+    auto max_revenue = std::numeric_limits<int>::min();
+
+    for (auto j = 1; j <= i; ++j) {
+      auto revenue = prices[j - 1] + revenues[i - j];
+      max_revenue = std::max(max_revenue, revenue);
+    }
+
+    revenues[i] = max_revenue;
+  }
+
+  return revenues[n];
+}
