@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <iostream>
+#include <iterator>
 
 int naive_top_down_recursive_rod_cut(const std::vector<int>& prices, int n) {
   if (n == 0) {
@@ -61,4 +62,30 @@ int bottom_up_rod_cut(const std::vector<int>& prices, int n) {
   }
 
   return revenues[n];
+}
+
+void print_matrix_chain_order(const std::vector<int>& mat_dims) {
+  std::vector<std::vector<int>> a(mat_dims.size() - 1, std::vector<int>(mat_dims.size() - 1, 0));
+
+  for (auto k = 1; k < a.size(); ++k) {
+    for (auto i = 0; i < a.size() - k; ++i) {
+      const auto j = k + i;
+
+      auto min = std::numeric_limits<int>::max();
+
+      for (auto l = i; l < j; ++l) {
+        auto tmp = a[i][l] + a[l + 1][j] + mat_dims[i] * mat_dims[l + 1] * mat_dims[j + 1];
+        min = std::min(min, tmp);
+      }
+
+      a[i][j] = min;
+    }
+  }
+
+  for (const auto& vec : a) {
+    std::copy(std::begin(vec), std::end(vec), std::ostream_iterator<int>(std::cout, " "));
+    
+    std::cout << "\n";
+  }
+
 }
