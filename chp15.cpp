@@ -64,28 +64,60 @@ int bottom_up_rod_cut(const std::vector<int>& prices, int n) {
   return revenues[n];
 }
 
-void print_matrix_chain_order(const std::vector<int>& mat_dims) {
-  std::vector<std::vector<int>> a(mat_dims.size() - 1, std::vector<int>(mat_dims.size() - 1, 0));
+using Matrix = std::vector<std::vector<int>>;
 
+void print_mat(const Matrix& mat) {
+  for (const auto& vec : mat) {
+    std::copy(std::begin(vec), std::end(vec), std::ostream_iterator<int>(std::cout, " "));
+    
+    std::cout << "\n";
+  }
+}
+
+Matrix solve_chain(const std::vector<int> mat_dims) {
+  Matrix a(mat_dims.size() - 1, std::vector<int>(mat_dims.size() - 1, 0));
+  Matrix s(mat_dims.size() - 2, std::vector<int>(mat_dims.size() - 2, 0));
+  
   for (auto k = 1; k < a.size(); ++k) {
     for (auto i = 0; i < a.size() - k; ++i) {
       const auto j = k + i;
 
       auto min = std::numeric_limits<int>::max();
+      auto s_tmp = 0;
 
       for (auto l = i; l < j; ++l) {
-        auto tmp = a[i][l] + a[l + 1][j] + mat_dims[i] * mat_dims[l + 1] * mat_dims[j + 1];
-        min = std::min(min, tmp);
+        const auto tmp = a[i][l] + a[l + 1][j] + mat_dims[i] * mat_dims[l + 1] * mat_dims[j + 1];
+
+        if (tmp < min) {
+          min = tmp;
+          s_tmp = l;
+        }
       }
 
       a[i][j] = min;
+      s[i][j-1] = s_tmp;
     }
   }
 
-  for (const auto& vec : a) {
-    std::copy(std::begin(vec), std::end(vec), std::ostream_iterator<int>(std::cout, " "));
-    
-    std::cout << "\n";
-  }
+  return s;
+}
 
+void print_solved_chain(const Matrix& s, int i, int j) {
+  if (i == j) {
+    std::cout << "A" << i;
+  } else {
+    std::cout << "(";
+
+    const auto k = s[i][j - 1];
+
+    print_solved_chain(s, i, k);
+    print_solved_chain(s, k + 1, j);
+
+    std::cout << ")";
+  }
+}
+
+void print_matrix_chain_order(const std::vector<int>& mat_dims) {
+  const auto s = solve_chain(mat_dims);
+  print_solved_chain(s, 0, s.size());
 }
