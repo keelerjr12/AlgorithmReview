@@ -6,7 +6,7 @@
 #include <iostream>
 #include <iterator>
 
-int naive_top_down_recursive_rod_cut(const std::vector<int>& prices, int n) {
+int rod_cut_td_naive(const std::vector<int>& prices, int n) {
   if (n == 0) {
     return 0;
   }
@@ -14,14 +14,14 @@ int naive_top_down_recursive_rod_cut(const std::vector<int>& prices, int n) {
   auto max_revenue = std::numeric_limits<int>::min();
 
   for (auto i = 1; i <= n; ++i) {
-    const auto revenue = prices[i - 1] + naive_top_down_recursive_rod_cut(prices, n - i);
+    const auto revenue = prices[i - 1] + rod_cut_td_naive(prices, n - i);
     max_revenue = std::max(revenue, max_revenue);
   }
 
   return max_revenue;
 }
 
-int top_down_memoization_rod_cut_aux(const std::vector<int>& prices, std::vector<int>& revenues, int n) {
+int rod_cut_td_memoization_aux(const std::vector<int>& prices, std::vector<int>& revenues, int n) {
   if (n == 0) {
     return 0;
   }
@@ -33,7 +33,7 @@ int top_down_memoization_rod_cut_aux(const std::vector<int>& prices, std::vector
   auto max_revenue = std::numeric_limits<int>::min();
 
   for (auto i = 1; i <= n; ++i) {
-    const auto revenue = prices[i - 1] + top_down_memoization_rod_cut_aux(prices, revenues, n - i);
+    const auto revenue = prices[i - 1] + rod_cut_td_memoization_aux(prices, revenues, n - i);
     max_revenue = std::max(revenue, max_revenue);
   }
 
@@ -42,12 +42,12 @@ int top_down_memoization_rod_cut_aux(const std::vector<int>& prices, std::vector
 
 }
 
-int top_down_memoization_rod_cut(const std::vector<int>& prices, int n) {
+int rod_cut_td_memoization(const std::vector<int>& prices, int n) {
   std::vector<int> revenues(n, -1);
-  return top_down_memoization_rod_cut_aux(prices, revenues, n);
+  return rod_cut_td_memoization_aux(prices, revenues, n);
 }
 
-int bottom_up_rod_cut(const std::vector<int>& prices, int n) {
+int rod_cut_bu(const std::vector<int>& prices, int n) {
   std::vector<int> revenues(n + 1, 0);
 
   for (auto i = 1; i <= n; ++i) {
@@ -62,6 +62,24 @@ int bottom_up_rod_cut(const std::vector<int>& prices, int n) {
   }
 
   return revenues[n];
+}
+
+int fib_td_aux(int n, std::vector<int>& memo) {
+  if (n == 0 || n == 1) {
+    return n;
+  } else if (memo[n] != -1) {
+    return memo[n];
+  }
+
+  memo[n-1] = fib_td_aux(n - 1, memo);
+  memo[n-2] = fib_td_aux(n - 2, memo);
+
+  return memo[n-1] + memo[n-2];
+}
+
+int fib_td(int n) {
+  std::vector<int> memo(n + 1, -1);
+  return fib_td_aux(n, memo);
 }
 
 using Matrix = std::vector<std::vector<int>>;
@@ -120,4 +138,39 @@ void print_solved_chain(const Matrix& s, int i, int j) {
 void print_matrix_chain_order(const std::vector<int>& mat_dims) {
   const auto s = solve_chain(mat_dims);
   print_solved_chain(s, 0, s.size());
+}
+
+
+int top_down_matrix_chain_order_aux(int i, int j, const std::vector<int>& mat_dims, Matrix& memo) {
+  if (i == j) {
+    return 0;
+  }
+  else if (memo[i][j] != -1) {
+    return memo[i][j];
+  }
+
+  auto min = std::numeric_limits<int>::max();
+
+  for (auto k = i; k < j; ++k) {
+    const auto lhs = top_down_matrix_chain_order_aux(i, k, mat_dims, memo);
+    const auto rhs = top_down_matrix_chain_order_aux(k+1, j, mat_dims, memo);
+    const auto work =  mat_dims[i] * mat_dims[k+1] * mat_dims[j + 1];
+    const auto total = lhs + rhs + work;
+    std::cout << i << " " << k << " " << j << ": " << total << std::endl;
+
+    if (total < min) {
+      min = total;
+      memo[i][j] = total;
+    }
+  }
+
+  return memo[i][j];
+}
+
+int top_down_matrix_chain_order(const std::vector<int>& mat_dims) {
+  const auto sz = mat_dims.size() - 1;
+  Matrix memo(sz, std::vector<int>(sz, -1));
+  top_down_matrix_chain_order_aux(0, sz - 1, mat_dims, memo);
+  print_mat(memo);
+  return memo[0][sz - 1];
 }
