@@ -3,25 +3,6 @@
 
 #include <vector>
 
-/* struct Set;
-
-struct Element {
-    int val;
-    Set* parent;
-    Element* next;
-};
-
-struct Set {
-    Element* head = nullptr;
-    Element* tail = nullptr;
-};
-
-void MakeSet(int x);
-
-Set& FindSet(int x);
-
-void Union(int x, int y); */
-
 class DisjointSets
 {
   public:
@@ -34,8 +15,8 @@ class DisjointSets
     void Union(int x, int y);
 
   private:
-
     std::vector<int> parent;
+    std::vector<int> rank;
 };
 
 #endif  //CHP21_H
