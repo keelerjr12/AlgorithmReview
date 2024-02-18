@@ -41,7 +41,7 @@ if (BUILD_TESTS)
   set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
   FetchContent_MakeAvailable(googletest)
 
-  add_executable(${TEST_PROJ} chp21.cpp chp21_tests.cpp)
+  add_executable(${TEST_PROJ} chp21.cpp chp23.cpp chp23_tests.cpp)
   target_link_libraries(
     ${TEST_PROJ}
     GTest::gtest_main
