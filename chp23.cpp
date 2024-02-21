@@ -1,64 +1,50 @@
 #include "chp23.h"
 
-Graph::Vertex::Vertex(int id)
+UGraph::Vertex::Vertex(int id)
   : _id(id)
 {}
 
-Graph::Vertex Graph::AddVertex()
+int UGraph::Vertex::Id() const
+{
+    return _id;
+}
+
+UGraph::Vertex UGraph::AddVertex()
 {
     const auto n = _vertices.size();
-    const Graph::Vertex v(n);
+    const UGraph::Vertex v(n);
 
     _vertices.push_back(v);
 
     return v;
 }
 
-void Graph::AddEdge(const Vertex& u, const Vertex& v, int weight)
+void UGraph::AddEdge(const Vertex& u, const Vertex& v, int weight)
 {
     _edges.push_back({&u, &v, weight});
-    _vertices[u._id]._edges.push_back(_edges.back());
-
     _edges.push_back({&v, &u, weight});
-    _vertices[v._id]._edges.push_back(_edges.back());
 }
 
-Graph::vertex_iterator Graph::begin()
+std::span<const UGraph::Vertex> UGraph::Vertices() const
 {
-    return _vertices.begin();
+    return _vertices;
 }
 
-Graph::vertex_iterator Graph::end()
+std::span<const UGraph::Edge> UGraph::Edges() const
 {
-    return _vertices.end();
+    return _edges;
 }
 
-Graph::const_vertex_iterator Graph::cbegin() const
+std::vector<UGraph::Edge> UGraph::Edges(const UGraph::Vertex& v) const
 {
-    return _vertices.cbegin();
-}
+    std::vector<Edge> out;
 
-Graph::const_vertex_iterator Graph::cend() const
-{
-    return _vertices.cend();
-}
+    std::copy_if(_edges.begin(),
+                 _edges.end(),
+                 std::back_inserter(out),
+                 [&](const Edge& edge) {
+                     return edge.source->Id() == v.Id();
+                 });
 
-Graph::edge_iterator Graph::edges_begin()
-{
-    return _edges.begin();
-}
-
-Graph::edge_iterator Graph::edges_end()
-{
-    return _edges.end();
-}
-
-Graph::const_edge_iterator Graph::edges_cbegin() const
-{
-    return _edges.cbegin();
-}
-
-Graph::const_edge_iterator Graph::edges_cend() const
-{
-    return _edges.cend();
+    return out;
 }
